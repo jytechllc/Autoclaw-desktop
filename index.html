@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AutoClaw Outreach</title>
+<style>
+:root{
+ --bg:#f3f2f4;--panel:#fff;--line:#e5e3e6;--text:#17171b;--muted:#73737d;
+ --red:#df1f26;--red2:#b9151b;--soft:#fff1f2;--dark:#121218;--shadow:0 18px 44px rgba(22,22,27,.07);
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+button,input,textarea,select{font:inherit} button{cursor:pointer}
+.shell{display:grid;grid-template-columns:244px 1fr;min-height:100vh}
+.sidebar{background:linear-gradient(180deg,#171820 0%,#24161a 100%);padding:18px 14px;color:#fff;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:8px 10px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+.brand svg{width:40px;height:40px;flex:none} .brand-name{font-size:20px;font-weight:850;letter-spacing:-.03em} .brand-name span{color:#ef343a}
+.nav{display:grid;gap:6px;margin-top:18px} .nav button{border:0;background:transparent;color:#b9bbc4;padding:11px 12px;border-radius:11px;text-align:left;display:flex;gap:10px;align-items:center}
+.nav button:hover,.nav button.active{background:rgba(255,255,255,.1);color:#fff} .nav i{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.07);font-style:normal}
+.account{position:absolute;bottom:16px;left:14px;right:14px;padding:11px;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:rgba(255,255,255,.06);display:flex;gap:10px;align-items:center}
+.avatar{width:36px;height:36px;border-radius:50%;background:#fff;color:var(--red);display:grid;place-items:center;font-weight:800}
+.main{min-width:0} .topbar{height:72px;padding:0 28px;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.title h1{font-size:20px;margin:0} .title p{margin:4px 0 0;color:var(--muted);font-size:12px} .actions{display:flex;gap:9px}
+.btn{border:1px solid var(--line);background:#fff;color:var(--text);padding:10px 15px;border-radius:10px;font-weight:750;transition:.18s} .btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(20,20,25,.08)} .btn.primary{background:var(--red);color:#fff;border-color:var(--red)} .btn.primary:hover{background:var(--red2)}
+.content{padding:30px 32px 48px;max-width:1600px;margin:0 auto} .view{display:none} .view.active{display:block}
+.hero{border-radius:24px;padding:32px;color:#fff;min-height:260px;position:relative;overflow:hidden;background:radial-gradient(circle at 76% 22%,rgba(242,58,65,.55),transparent 30%),linear-gradient(115deg,#13141d 0%,#2a1b23 46%,#83151a 100%);box-shadow:var(--shadow)}
+.hero:after{content:"";position:absolute;right:-80px;bottom:-130px;width:340px;height:340px;border-radius:50%;border:54px solid rgba(255,255,255,.05)}
+.eyebrow{font-size:12px;font-weight:850;letter-spacing:.13em;color:#ffc1c4} .hero h2{font-size:42px;line-height:1.04;letter-spacing:-.05em;margin:20px 0 14px;max-width:720px} .hero h2 span{color:#ff9ca2} .hero p{max-width:690px;color:#d9d9df;line-height:1.65} .hero .actions{margin-top:22px}
+.grid{display:grid;gap:16px} .g4{grid-template-columns:repeat(4,minmax(0,1fr))} .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:linear-gradient(180deg,#ffffff 0%,#fdfcfd 100%);border:1px solid rgba(226,223,227,.95);border-radius:20px;padding:20px;box-shadow:0 10px 30px rgba(24,20,26,.045)} .card h3{margin:0 0 5px} .muted{color:var(--muted)}
+.metrics{margin-top:0} .metric{display:flex;justify-content:space-between;gap:15px;position:relative;overflow:hidden;min-height:166px;padding:22px;border-radius:22px;box-shadow:0 16px 34px rgba(81,12,17,.16)}
+.metric:after{content:"";position:absolute;right:-38px;bottom:-58px;width:130px;height:130px;border-radius:50%;border:26px solid rgba(255,255,255,.09)}
+.metric:nth-child(1){background:linear-gradient(135deg,#df1f26 0%,#b9151b 100%);color:#fff;border-color:#df1f26}
+.metric:nth-child(2){background:linear-gradient(135deg,#f23a41 0%,#d91f26 100%);color:#fff;border-color:#ef343a}
+.metric:nth-child(3){background:linear-gradient(135deg,#7b171b 0%,#45151a 100%);color:#fff;border-color:#6f171c}
+.metric:nth-child(4){background:linear-gradient(135deg,#21171b 0%,#111217 100%);color:#fff;border-color:#24242a}
+.metric .muted{color:rgba(255,255,255,.72)}
+.metric .pill{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.12)}
+.metric .icon{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.1)}
+.metric strong{position:relative;z-index:1}
+.metric>div{position:relative;z-index:1} .metric strong{display:block;font-size:34px;letter-spacing:-.04em;margin:12px 0 14px} .icon{width:42px;height:42px;border-radius:13px;background:var(--soft);color:var(--red);display:grid;place-items:center;font-weight:900}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;font-size:12px;font-weight:800;background:#eef8f2;color:#16885d} .pill.red{background:var(--soft);color:var(--red)} .pill.orange{background:#fff4e8;color:#dc7d12}
+.chart{height:250px;border-radius:16px;position:relative;overflow:hidden;background:linear-gradient(to top,transparent 24%,#eee 25%,transparent 26%,transparent 49%,#eee 50%,transparent 51%,transparent 74%,#eee 75%,transparent 76%)}
+.chart svg{position:absolute;inset:0;width:100%;height:100%}
+.activity{display:grid} .activity-row{display:grid;grid-template-columns:42px 1fr auto;gap:13px;align-items:center;padding:15px 0;border-bottom:1px solid var(--line)} .activity-row:last-child{border-bottom:0} .activity-row p{margin:3px 0 0;font-size:13px;color:var(--muted)}
+.toolbar{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px} .search{min-width:300px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff} .chips{display:flex;gap:7px;flex-wrap:wrap} .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:750} .chip.active{background:var(--dark);color:#fff}
+.list{display:grid;gap:10px} .lead{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr .8fr auto;gap:14px;align-items:center;transition:.18s} .lead:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(20,20,25,.07)} .person{display:flex;gap:10px;align-items:center} .small{font-size:12px;color:var(--muted)}
+.inbox{display:grid;grid-template-columns:300px 1fr 280px;height:calc(100vh - 130px);min-height:620px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden} .threads{background:#fafafa;border-right:1px solid var(--line);overflow:auto} .thread{padding:15px;border-bottom:1px solid var(--line)} .thread.active{background:#fff;border-left:3px solid var(--red)} .conversation{display:flex;flex-direction:column} .conv-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between} .messages{padding:20px;overflow:auto;flex:1} .msg{max-width:72%;padding:13px 15px;border-radius:15px;line-height:1.55;margin-bottom:12px;font-size:14px;background:#f2f2f4} .msg.out{margin-left:auto;background:var(--red);color:#fff} .composer{padding:14px;border-top:1px solid var(--line);background:#fafafa} .composer textarea{width:100%;min-height:88px;border:1px solid var(--line);border-radius:11px;padding:11px} .profile{border-left:1px solid var(--line);background:#fafafa;padding:18px} .profile-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
+.wizard{max-width:980px;margin:auto} .steps{display:flex;justify-content:space-between;margin-bottom:18px} .step{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;font-weight:800} .step b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#e9e9ec} .step.active{color:var(--red)} .step.active b{background:var(--red);color:#fff} .wizard-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)} .wiz-head,.wiz-foot{padding:20px 24px;display:flex;justify-content:space-between;align-items:center} .wiz-head{border-bottom:1px solid var(--line)} .wiz-foot{border-top:1px solid var(--line);background:#fafafa} .wiz-body{padding:24px} .fields{display:grid;grid-template-columns:1fr 1fr;gap:15px} .field label{display:block;font-size:12px;font-weight:800;margin-bottom:7px} .field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;outline:none} .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(223,31,38,.08)} .field.full{grid-column:1/-1}
+.setting{display:flex;justify-content:space-between;align-items:center;padding:14px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px} .toggle{width:44px;height:25px;border-radius:999px;background:#d5d5da;position:relative} .toggle:after{content:"";position:absolute;width:19px;height:19px;border-radius:50%;background:#fff;top:3px;left:3px;box-shadow:0 2px 6px rgba(0,0,0,.18)} .toggle.on{background:var(--red)} .toggle.on:after{left:22px}
+@media(max-width:1050px){.g4{grid-template-columns:repeat(2,1fr)}.inbox{grid-template-columns:260px 1fr}.profile{display:none}.lead{grid-template-columns:1.2fr 1fr 1fr auto}.lead .hide-sm{display:none}}
+@media(max-width:760px){.shell{grid-template-columns:72px 1fr}.sidebar{padding:12px 8px}.brand-name,.account,.nav span{display:none}.brand{justify-content:center}.nav button{justify-content:center}.content{padding:18px}.g4,.g2{grid-template-columns:1fr}.hero h2{font-size:31px}.inbox{grid-template-columns:1fr}.threads{display:none}.fields{grid-template-columns:1fr}}
+
+.dashboard-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:2px 0 22px}
+.dashboard-head h2{font-size:32px;line-height:1.06;letter-spacing:-.045em;margin:7px 0 8px}
+.dashboard-head p{margin:0;color:var(--muted)}
+.kicker{font-size:11px;letter-spacing:.14em;font-weight:850;color:var(--red)}
+.dashboard-actions{display:flex;gap:10px;flex-wrap:wrap}
+.metric:nth-child(1){background:
+  radial-gradient(circle at 82% 18%,rgba(255,255,255,.16),transparent 24%),
+  linear-gradient(135deg,#ef3a40 0%,#d51c23 58%,#ac1218 100%)}
+.metric:nth-child(2){background:
+  radial-gradient(circle at 80% 20%,rgba(255,255,255,.15),transparent 23%),
+  linear-gradient(135deg,#ff5b61 0%,#e72d34 54%,#c8181f 100%)}
+.metric:nth-child(3){background:
+  radial-gradient(circle at 80% 20%,rgba(255,255,255,.11),transparent 25%),
+  linear-gradient(135deg,#8f1d22 0%,#64161b 55%,#3f1317 100%)}
+.metric:nth-child(4){background:
+  radial-gradient(circle at 80% 18%,rgba(255,255,255,.08),transparent 24%),
+  linear-gradient(135deg,#302127 0%,#1c171c 58%,#111216 100%)}
+.metric:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.08),transparent 36%);pointer-events:none}
+.metric .icon{backdrop-filter:blur(8px)}
+.card-heading{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.card-heading h3{font-size:16px;letter-spacing:-.02em}
+.card-heading .small{margin-top:4px}
+.section-badge{font-size:11px;font-weight:800;padding:7px 9px;border-radius:999px;background:#f6f1f2;color:#8c2227}
+.performance-card{position:relative;overflow:hidden}
+.performance-card:after{content:"";position:absolute;right:-90px;top:-110px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(223,31,38,.08),transparent 68%);pointer-events:none}
+.activity-card{position:relative}
+.activity-card:after{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#24171b,#df1f26);border-radius:20px 20px 0 0}
+.metrics{gap:18px}
+@media(max-width:760px){.dashboard-head{align-items:flex-start;flex-direction:column}.dashboard-actions{width:100%}.dashboard-actions .btn{flex:1}.dashboard-head h2{font-size:27px}}
+
+
+.campaign-health{margin-top:18px;background:linear-gradient(90deg,#fff 0%,#fbf7f8 100%);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:18px;box-shadow:0 8px 24px rgba(25,20,25,.035)}
+.health-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#1aa56f;margin-right:9px;box-shadow:0 0 0 5px rgba(26,165,111,.1)}
+.campaign-health span{color:var(--muted);font-size:13px}
+.health-stats{display:flex;gap:20px;flex-wrap:wrap}
+.health-stats b{color:var(--text);margin-right:3px}
+@media(max-width:900px){.campaign-health{align-items:flex-start;flex-direction:column}.health-stats{gap:12px}}
+
+
+/* AutoClaw proprietary visual language */
+:root{--display:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{font-family:var(--display);font-feature-settings:"ss01" 1,"cv02" 1}
+h1,h2,h3,b,strong{letter-spacing:-.018em}
+.title h1{font-size:22px;font-weight:820;letter-spacing:-.035em}
+.title p{font-size:12.5px;letter-spacing:.005em}
+.dashboard-head h2{font-size:34px;font-weight:820}
+.dashboard-head p{font-size:14px;line-height:1.55}
+.kicker,.metric-kicker,.section-label{font-size:10px;font-weight:850;letter-spacing:.15em;text-transform:uppercase}
+.metric-kicker{display:block;color:rgba(255,255,255,.62);margin-bottom:7px}
+.metric .muted{font-size:13px;font-weight:680;letter-spacing:.01em}
+.metric strong{font-size:38px;font-weight:830;line-height:1}
+.card h3{font-size:17px;font-weight:800;letter-spacing:-.028em}
+.small{font-size:12.5px;line-height:1.45}
+.nav i svg,.icon svg,.flow-node span svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav i{background:transparent;border:1px solid rgba(255,255,255,.08)}
+.nav button.active i{background:rgba(239,52,58,.16);border-color:rgba(239,52,58,.28);color:#ff6f74}
+.icon{width:44px;height:44px;border-radius:14px}
+.icon svg{width:20px;height:20px}
+.section-label{display:inline-flex;align-items:center;gap:6px;color:var(--red);margin-bottom:8px}
+.section-label:before{content:"";width:18px;height:2px;border-radius:2px;background:currentColor}
+.section-label.dark{color:#302127}
+
+/* Claw-shaped workflow graphic */
+.claw-flow{position:relative;display:grid;grid-template-columns:auto 1fr auto 1fr auto 1fr auto;align-items:center;gap:14px;padding:18px 22px;margin-bottom:18px;background:
+linear-gradient(180deg,rgba(255,255,255,.98),rgba(252,249,250,.98));
+border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 30px rgba(33,22,28,.045);overflow:hidden}
+.claw-flow:before{content:"";position:absolute;inset:0;background:
+radial-gradient(circle at 10% 50%,rgba(223,31,38,.08),transparent 24%),
+linear-gradient(90deg,transparent 0%,rgba(223,31,38,.025) 48%,transparent 100%);pointer-events:none}
+.claw-mark{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(145deg,#fff4f4,#ffe4e5);box-shadow:inset 0 0 0 1px rgba(223,31,38,.12)}
+.claw-mark svg{width:34px;height:34px}
+.flow-node{position:relative;display:flex;align-items:center;gap:10px;min-width:145px;z-index:1}
+.flow-node span{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);color:#4b4145;box-shadow:0 6px 14px rgba(25,20,25,.045)}
+.flow-node.active span{background:var(--red);color:#fff;border-color:var(--red)}
+.flow-node b{display:block;font-size:13px;font-weight:800}
+.flow-node small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.flow-line{display:flex;align-items:center;justify-content:center;gap:5px;min-width:42px}
+.flow-line i{width:5px;height:5px;border-radius:50%;background:#d9c7ca}
+.flow-line i:nth-child(2){background:#ef858a}.flow-line i:nth-child(3){background:var(--red)}
+.claw-bracket{position:absolute;top:9px;bottom:9px;width:18px;border-top:2px solid rgba(223,31,38,.18);border-bottom:2px solid rgba(223,31,38,.18)}
+.claw-bracket.left{left:8px;border-left:2px solid rgba(223,31,38,.18);border-radius:12px 0 0 12px}
+.claw-bracket.right{right:8px;border-right:2px solid rgba(223,31,38,.18);border-radius:0 12px 12px 0}
+
+/* Branded mini data glyphs */
+.spark{display:flex;align-items:flex-end;gap:4px;height:20px;margin:2px 0 12px}
+.spark i{display:block;width:5px;border-radius:4px;background:rgba(255,255,255,.42)}
+.spark i:nth-child(1){height:8px}.spark i:nth-child(2){height:13px}.spark i:nth-child(3){height:10px}.spark i:nth-child(4){height:17px}.spark i:nth-child(5){height:20px}
+.spark-b i:nth-child(1){height:12px}.spark-b i:nth-child(2){height:8px}.spark-b i:nth-child(3){height:15px}.spark-b i:nth-child(4){height:13px}.spark-b i:nth-child(5){height:19px}
+.spark-c i:nth-child(1){height:7px}.spark-c i:nth-child(2){height:11px}.spark-c i:nth-child(3){height:18px}.spark-c i:nth-child(4){height:14px}.spark-c i:nth-child(5){height:17px}
+.spark-d i:nth-child(1){height:6px}.spark-d i:nth-child(2){height:9px}.spark-d i:nth-child(3){height:12px}.spark-d i:nth-child(4){height:16px}.spark-d i:nth-child(5){height:20px}
+
+/* Refined branded card edge */
+.metric{border:1px solid rgba(255,255,255,.08)}
+.metric:after{border-width:22px;right:-34px;bottom:-56px}
+.metric:nth-child(1):after,.metric:nth-child(2):after{border-color:rgba(255,255,255,.10)}
+.metric:nth-child(3):after,.metric:nth-child(4):after{border-color:rgba(255,255,255,.065)}
+.performance-card{border-top:0}
+.performance-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#ef3d44,#991b1b)}
+.activity-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#2d2025,#df1f26)}
+.activity-card:after{display:none}
+
+@media(max-width:1180px){
+  .claw-flow{grid-template-columns:auto 1fr auto 1fr;row-gap:14px}
+  .flow-line:nth-of-type(2),.flow-line:nth-of-type(4){display:none}
+}
+@media(max-width:760px){
+  .claw-flow{display:none}
+  .metric strong{font-size:34px}
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="lobsterRed" x1="16" y1="10" x2="46" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fb7185"/><stop offset="0.52" stop-color="#ef4444"/><stop offset="1" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="lobsterOrange" x1="6" y1="12" x2="58" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fdba74"/><stop offset="1" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+  <path d="M28 17C24 10 18 5 10 2" stroke="#fb923c" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M36 17C40 10 46 5 54 2" stroke="#fb923c" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M30 18C28 9 25 4 21 1" stroke="#fdba74" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M34 18C36 9 39 4 43 1" stroke="#fdba74" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M21 27C13 26 8 22 4 15C9 13 15 13 20 16C17 11 17 6 19 2C27 6 31 14 31 21" fill="url(#lobsterOrange)"/>
+  <path d="M43 27C51 26 56 22 60 15C55 13 49 13 44 16C47 11 47 6 45 2C37 6 33 14 33 21" fill="url(#lobsterOrange)"/>
+  <path d="M24 24L16 19" stroke="#dc2626" stroke-width="2.7" stroke-linecap="round"/>
+  <path d="M40 24L48 19" stroke="#dc2626" stroke-width="2.7" stroke-linecap="round"/>
+  <path d="M32 16C24.5 16 20 23 20 30C20 36 24 40 32 40C40 40 44 36 44 30C44 23 39.5 16 32 16Z" fill="url(#lobsterRed)"/>
+  <path d="M26 21C27.8 19 29.8 18 32 18C34.2 18 36.2 19 38 21" stroke="#fecaca" stroke-width="1.8" stroke-linecap="round"/>
+  <circle cx="24.6" cy="29.4" r="2.1" fill="#fb7185" opacity="0.55"/>
+  <circle cx="39.4" cy="29.4" r="2.1" fill="#fb7185" opacity="0.55"/>
+  <circle cx="28" cy="24.6" r="2.7" fill="#fff7ed"/><circle cx="36" cy="24.6" r="2.7" fill="#fff7ed"/>
+  <circle cx="28.2" cy="24.0" r="1.35" fill="#111827"/><circle cx="36.2" cy="24.0" r="1.35" fill="#111827"/>
+  <circle cx="27.6" cy="23.4" r="0.62" fill="#ffffff"/><circle cx="35.6" cy="23.4" r="0.62" fill="#ffffff"/>
+  <path d="M27.5 29.6C29.2 32.2 34.8 32.2 36.5 29.6" stroke="#7f1d1d" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <ellipse cx="32" cy="42" rx="8.5" ry="5.8" fill="#dc2626"/>
+  <ellipse cx="32" cy="49" rx="7" ry="4.8" fill="#b91c1c"/>
+  <ellipse cx="32" cy="55" rx="5.5" ry="3.8" fill="#991b1b"/>
+  <path d="M27 58C29 61 30.5 62 32 62C33.5 62 35 61 37 58" stroke="#7f1d1d" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M23 35L15 39M24 40L15 45M25 45L17 50M41 35L49 39M40 40L49 45M39 45L47 50" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+</svg><div class="brand-name"><span>Auto</span>Claw</div></div>
+  <div class="nav">
+    <button class="active" data-view="dashboard"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.8V21h14V9.8"/><path d="M9 21v-7h6v7"/></svg></i><span>Dashboard</span></button>
+    <button data-view="leads"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c.6-4 2.6-6 5.5-6s4.9 2 5.5 6"/><circle cx="17.5" cy="9" r="2.5"/><path d="M15.5 15c2.7.2 4.4 1.8 5 5"/></svg></i><span>Leads</span></button>
+    <button data-view="inbox"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg></i><span>Inbox</span></button>
+    <button data-view="campaign"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17V7"/><path d="M8 17V11"/><path d="M12 17V5"/><path d="M16 17V9"/><path d="M20 17V3"/></svg></i><span>Campaign</span></button>
+    <button data-view="wizard"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i><span>New Outreach</span></button>
+    <button data-view="settings"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21h-4v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H3v-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3h4v.1A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1A1.7 1.7 0 0 0 19.4 9 1.7 1.7 0 0 0 21 10v4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></i><span>Settings</span></button>
+  </div>
+  <div class="account"><div class="avatar">MP</div><div><b>Michelle Pan</b><div class="small" style="color:#aaa">Admin workspace</div></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="title"><h1 id="pageTitle">Dashboard</h1><p id="pageSub">Your automated outbound workspace</p></div>
+  <div class="actions"><button class="btn">Help</button><button class="btn primary" onclick="openView('wizard')">+ New Outreach</button></div>
+</header>
+<div class="content">
+
+<section class="view active" id="dashboard">
+  <div class="dashboard-head">
+    <div>
+      <div class="kicker">AUTOMATED OUTREACH</div>
+      <h2>Good afternoon, Michelle.</h2>
+      <p>Here’s what AutoClaw has handled for you today.</p>
+    </div>
+    <div class="dashboard-actions">
+      <button class="btn">Pause Automation</button>
+      <button class="btn primary" onclick="openView('wizard')">Launch New Campaign</button>
+    </div>
+  </div>
+
+  <div class="claw-flow" aria-label="AutoClaw automation flow">
+    <div class="claw-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="lobsterRed" x1="16" y1="10" x2="46" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fb7185"/><stop offset="0.52" stop-color="#ef4444"/><stop offset="1" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="lobsterOrange" x1="6" y1="12" x2="58" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fdba74"/><stop offset="1" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+  <path d="M28 17C24 10 18 5 10 2" stroke="#fb923c" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M36 17C40 10 46 5 54 2" stroke="#fb923c" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M30 18C28 9 25 4 21 1" stroke="#fdba74" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M34 18C36 9 39 4 43 1" stroke="#fdba74" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M21 27C13 26 8 22 4 15C9 13 15 13 20 16C17 11 17 6 19 2C27 6 31 14 31 21" fill="url(#lobsterOrange)"/>
+  <path d="M43 27C51 26 56 22 60 15C55 13 49 13 44 16C47 11 47 6 45 2C37 6 33 14 33 21" fill="url(#lobsterOrange)"/>
+  <path d="M24 24L16 19" stroke="#dc2626" stroke-width="2.7" stroke-linecap="round"/>
+  <path d="M40 24L48 19" stroke="#dc2626" stroke-width="2.7" stroke-linecap="round"/>
+  <path d="M32 16C24.5 16 20 23 20 30C20 36 24 40 32 40C40 40 44 36 44 30C44 23 39.5 16 32 16Z" fill="url(#lobsterRed)"/>
+  <path d="M26 21C27.8 19 29.8 18 32 18C34.2 18 36.2 19 38 21" stroke="#fecaca" stroke-width="1.8" stroke-linecap="round"/>
+  <circle cx="24.6" cy="29.4" r="2.1" fill="#fb7185" opacity="0.55"/>
+  <circle cx="39.4" cy="29.4" r="2.1" fill="#fb7185" opacity="0.55"/>
+  <circle cx="28" cy="24.6" r="2.7" fill="#fff7ed"/><circle cx="36" cy="24.6" r="2.7" fill="#fff7ed"/>
+  <circle cx="28.2" cy="24.0" r="1.35" fill="#111827"/><circle cx="36.2" cy="24.0" r="1.35" fill="#111827"/>
+  <circle cx="27.6" cy="23.4" r="0.62" fill="#ffffff"/><circle cx="35.6" cy="23.4" r="0.62" fill="#ffffff"/>
+  <path d="M27.5 29.6C29.2 32.2 34.8 32.2 36.5 29.6" stroke="#7f1d1d" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <ellipse cx="32" cy="42" rx="8.5" ry="5.8" fill="#dc2626"/>
+  <ellipse cx="32" cy="49" rx="7" ry="4.8" fill="#b91c1c"/>
+  <ellipse cx="32" cy="55" rx="5.5" ry="3.8" fill="#991b1b"/>
+  <path d="M27 58C29 61 30.5 62 32 62C33.5 62 35 61 37 58" stroke="#7f1d1d" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M23 35L15 39M24 40L15 45M25 45L17 50M41 35L49 39M40 40L49 45M39 45L47 50" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+</svg></div>
+    <div class="flow-node active"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3"/></svg></span><div><b>Find</b><small>Qualified leads</small></div></div>
+    <div class="flow-line"><i></i><i></i><i></i></div>
+    <div class="flow-node"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg></span><div><b>Reach</b><small>Personalized email</small></div></div>
+    <div class="flow-line"><i></i><i></i><i></i></div>
+    <div class="flow-node"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="M5 12h8c4 0 7 2 7 6"/></svg></span><div><b>Engage</b><small>AI follow-up</small></div></div>
+    <div class="flow-line"><i></i><i></i><i></i></div>
+    <div class="flow-node"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h8M8 3v2M5 8c1.3 3 3.2 5.2 6 6.5"/><path d="M11 8c-.7 3.2-2.5 5.7-6 7"/><path d="m14 20 3-8 3 8M15 17h4"/></svg></span><div><b>Convert</b><small>Reply & translate</small></div></div>
+    <div class="claw-bracket left"></div><div class="claw-bracket right"></div>
+  </div>
+  <div class="grid g4 metrics">
+    <div class="card metric"><div><span class="metric-kicker">Discovery</span><span class="muted">Leads Found</span><strong>1,284</strong><div class="spark spark-a"><i></i><i></i><i></i><i></i><i></i></div><span class="pill">+18.4%</span></div><div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3"/></svg></div></div>
+    <div class="card metric"><div><span class="metric-kicker">Outreach</span><span class="muted">Emails Sent</span><strong>842</strong><div class="spark spark-b"><i></i><i></i><i></i><i></i><i></i></div><span class="pill">+12.8%</span></div><div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg></div></div>
+    <div class="card metric"><div><span class="metric-kicker">Engagement</span><span class="muted">Replies</span><strong>96</strong><div class="spark spark-c"><i></i><i></i><i></i><i></i><i></i></div><span class="pill red">11.4%</span></div><div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="M5 12h8c4 0 7 2 7 6"/></svg></div></div>
+    <div class="card metric"><div><span class="metric-kicker">Conversion</span><span class="muted">Interested</span><strong>12</strong><div class="spark spark-d"><i></i><i></i><i></i><i></i><i></i></div><span class="pill orange">3 new</span></div><div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></div></div>
+  </div>
+  <div class="campaign-health">
+    <div><span class="health-dot"></span><b>Campaign health is strong</b><span> · 98.2% deliverability</span></div>
+    <div class="health-stats"><span><b>24</b> leads added today</span><span><b>7</b> replies waiting</span><span><b>3</b> meetings booked</span></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card performance-card"><div class="card-heading"><div><div class="section-label">Performance</div><h3>Outreach Performance</h3><div class="muted small">Email activity over the last 14 days</div></div><button class="btn">14 Days</button></div><div class="chart"><svg viewBox="0 0 600 220" preserveAspectRatio="none"><path d="M0,180 C80,160 95,115 165,130 C230,143 245,80 315,94 C380,108 400,55 462,75 C520,95 540,45 600,50" fill="none" stroke="#df1f26" stroke-width="5" stroke-linecap="round"/></svg></div></div>
+    <div class="card activity-card"><div class="card-heading"><div><div class="section-label dark">Live Feed</div><h3>Recent Activity</h3><div class="muted small">Live automation feed</div></div><span class="pill">● Running</span></div><div class="activity">
+      <div class="activity-row"><div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3"/></svg></div><div><b>24 new leads found</b><p>Matched your target profile</p></div><span class="small">2m</span></div>
+      <div class="activity-row"><div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg></div><div><b>Email sent to Sarah Johnson</b><p>Bright Studio · Marketing Manager</p></div><span class="small">8m</span></div>
+      <div class="activity-row"><div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"/><path d="M5 12h8c4 0 7 2 7 6"/></svg></div><div><b>Reply received from Alex Martinez</b><p>AI drafted a response</p></div><span class="small">18m</span></div>
+      <div class="activity-row"><div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h8M8 3v2M5 8c1.3 3 3.2 5.2 6 6.5"/><path d="M11 8c-.7 3.2-2.5 5.7-6 7"/><path d="m14 20 3-8 3 8M15 17h4"/></svg></div><div><b>Spanish reply translated</b><p>Sent automatically</p></div><span class="small">31m</span></div>
+    </div></div>
+  </div>
+</section>
+
+<section class="view" id="leads">
+  <div class="toolbar"><input class="search" placeholder="Search leads, companies, titles..."><div class="chips"><button class="chip active">All</button><button class="chip">New</button><button class="chip">Replied</button><button class="chip">Interested</button><button class="btn primary">Export</button></div></div>
+  <div class="list">
+    <div class="lead"><div class="person"><div class="avatar">SJ</div><div><b>Sarah Johnson</b><div class="small">Marketing Manager</div></div></div><div><b>Bright Studio</b><div class="small">E-commerce</div></div><div class="hide-sm">sarah@brightstudio.com</div><div class="hide-sm">+1 659 123 4567</div><span class="pill">Interested</span><button class="btn">View</button></div>
+    <div class="lead"><div class="person"><div class="avatar">AM</div><div><b>Alex Martinez</b><div class="small">Founder</div></div></div><div><b>Nova Labs</b><div class="small">SaaS</div></div><div class="hide-sm">alex@novalabs.io</div><div class="hide-sm">+1 415 230 7788</div><span class="pill orange">Follow-up</span><button class="btn">View</button></div>
+    <div class="lead"><div class="person"><div class="avatar">MC</div><div><b>Michael Chen</b><div class="small">Head of Growth</div></div></div><div><b>Shoply</b><div class="small">Retail Tech</div></div><div class="hide-sm">michael@shoply.co</div><div class="hide-sm">+1 212 887 4511</div><span class="pill red">Replied</span><button class="btn">View</button></div>
+  </div>
+</section>
+
+<section class="view" id="inbox">
+  <div class="inbox">
+    <div class="threads"><div style="padding:14px"><input class="search" style="min-width:0;width:100%" placeholder="Search inbox"></div><div class="thread active"><b>Sarah Johnson</b><div class="small">Re: Quick question about AutoClaw</div></div><div class="thread"><b>Alex Martinez</b><div class="small">Re: Follow up</div></div><div class="thread"><b>Juan Perez</b><div class="small">Sobre su plataforma</div></div></div>
+    <div class="conversation"><div class="conv-head"><div><b>Sarah Johnson</b><div class="small">Bright Studio · Marketing Manager</div></div><span class="pill">Interested</span></div><div class="messages"><div class="msg out">Hi Sarah, AutoClaw helps teams automate lead generation and follow-up. Would you be open to a quick chat this week?</div><div class="msg">Thanks for reaching out. Can you tell me more about how it works and what kind of results clients typically see?</div><div class="msg out">Absolutely. AutoClaw finds qualified prospects, enriches contact details, creates personalized outreach, and follows up automatically.</div></div><div class="composer"><textarea>Would you like me to send over a short overview or schedule a demo?</textarea><div style="display:flex;justify-content:space-between;margin-top:9px"><div><button class="btn">AI Draft</button> <button class="btn">Translate</button></div><button class="btn primary">Send Reply</button></div></div></div>
+    <div class="profile"><div style="text-align:center"><div class="avatar" style="margin:auto;width:66px;height:66px;font-size:22px">SJ</div><h3>Sarah Johnson</h3><div class="small">Marketing Manager · Bright Studio</div></div><div class="profile-card"><div class="small">Email</div><b>sarah@brightstudio.com</b></div><div class="profile-card"><div class="small">Phone</div><b>+1 659 123 4567</b></div><div class="profile-card"><div class="small">LinkedIn</div><b>/in/sarahjohnson</b></div></div>
+  </div>
+</section>
+
+<section class="view" id="campaign">
+  <div class="grid g2">
+    <div class="card"><div style="display:flex;justify-content:space-between"><div><h3>US E-commerce Outreach</h3><div class="small muted">Primary campaign</div></div><span class="pill">Running</span></div><div class="profile-card"><div class="small">Target Audience</div><b>Marketing leaders at US e-commerce companies</b></div><div class="profile-card"><div class="small">Daily Leads</div><b>20</b></div><div class="profile-card"><div class="small">Follow-ups</div><b>2</b></div><div style="margin-top:12px"><button class="btn">Pause</button> <button class="btn primary">Edit Campaign</button></div></div>
+    <div class="card"><h3>Email Sequence</h3><div class="profile-card"><b>1 · Initial Email</b><div class="small">Day 0 · Personalized introduction</div></div><div class="profile-card"><b>2 · Follow-up</b><div class="small">Day 3 · Short reminder</div></div><div class="profile-card"><b>3 · Final Follow-up</b><div class="small">Day 7 · Last touch</div></div></div>
+  </div>
+</section>
+
+<section class="view" id="wizard">
+<div class="wizard">
+  <div class="steps"><div class="step active" data-ind="1"><b>1</b>Profile</div><div class="step" data-ind="2"><b>2</b>Email</div><div class="step" data-ind="3"><b>3</b>Target</div><div class="step" data-ind="4"><b>4</b>Message</div><div class="step" data-ind="5"><b>5</b>Automation</div><div class="step" data-ind="6"><b>6</b>Review</div></div>
+  <div class="wizard-card">
+    <div class="wiz-step" data-step="1"><div class="wiz-head"><div><h3>Tell us about your business</h3><div class="small muted">Used to personalize outreach and answer questions.</div></div><span class="pill red">Step 1 of 6</span></div><div class="wiz-body"><div class="fields"><div class="field"><label>Your Name</label><input value="Michelle Pan"></div><div class="field"><label>Job Title</label><input value="Founder"></div><div class="field"><label>Company</label><input value="AutoClaw Inc."></div><div class="field"><label>Website</label><input value="https://autoclaw.com"></div><div class="field full"><label>Product / Service</label><textarea rows="5">AI-powered lead generation and email outreach automation for B2B teams.</textarea></div></div></div><div class="wiz-foot"><button class="btn" disabled>Back</button><button class="btn primary" onclick="next()">Continue</button></div></div>
+    <div class="wiz-step" data-step="2" style="display:none"><div class="wiz-head"><div><h3>Connect your email</h3><div class="small muted">Choose the account AutoClaw will send from.</div></div><span class="pill red">Step 2 of 6</span></div><div class="wiz-body"><div class="setting"><div><b>Gmail</b><div class="small">michelle@autoclaw.com</div></div><span class="pill">Connected</span></div><div class="setting"><div><b>Outlook</b><div class="small">Connect a Microsoft account</div></div><button class="btn">Connect</button></div></div><div class="wiz-foot"><button class="btn" onclick="prev()">Back</button><button class="btn primary" onclick="next()">Continue</button></div></div>
+    <div class="wiz-step" data-step="3" style="display:none"><div class="wiz-head"><div><h3>Define your target customer</h3><div class="small muted">Describe who you want AutoClaw to find.</div></div><span class="pill red">Step 3 of 6</span></div><div class="wiz-body"><div class="fields"><div class="field full"><label>Ideal Customer</label><textarea rows="4">Marketing managers and founders at small e-commerce companies in the United States.</textarea></div><div class="field"><label>Industry</label><select><option>E-commerce</option></select></div><div class="field"><label>Location</label><select><option>United States</option></select></div><div class="field"><label>Job Titles</label><input value="Marketing Manager, Founder"></div><div class="field"><label>Company Size</label><select><option>10–200 employees</option></select></div></div></div><div class="wiz-foot"><button class="btn" onclick="prev()">Back</button><button class="btn primary" onclick="next()">Continue</button></div></div>
+    <div class="wiz-step" data-step="4" style="display:none"><div class="wiz-head"><div><h3>Create the message</h3><div class="small muted">Write your own or use AI.</div></div><span class="pill red">Step 4 of 6</span></div><div class="wiz-body"><div class="fields"><div class="field full"><label>Subject</label><input value="Quick question about {company_name}"></div><div class="field full"><label>Email Body</label><textarea rows="10">Hi {first_name},
+
+I noticed that {company_name} is doing great work in the e-commerce space.
+
+AutoClaw helps teams automate lead generation and follow-up.
+
+Would you be open to a quick chat this week?</textarea></div></div></div><div class="wiz-foot"><button class="btn" onclick="prev()">Back</button><button class="btn primary" onclick="next()">Continue</button></div></div>
+    <div class="wiz-step" data-step="5" style="display:none"><div class="wiz-head"><div><h3>Set up automation</h3><div class="small muted">Turn on the parts you want AutoClaw to handle.</div></div><span class="pill red">Step 5 of 6</span></div><div class="wiz-body"><div class="setting"><div><b>Automatic Follow-ups</b><div class="small">Send reminders when a lead does not reply.</div></div><div class="toggle on"></div></div><div class="setting"><div><b>AI Reply</b><div class="small">Answer standard questions automatically.</div></div><div class="toggle on"></div></div><div class="setting"><div><b>Automatic Translation</b><div class="small">Translate and send in the customer’s language.</div></div><div class="toggle on"></div></div><div class="setting"><div><b>Approval for Complex Questions</b><div class="small">Require review for sensitive replies.</div></div><div class="toggle on"></div></div></div><div class="wiz-foot"><button class="btn" onclick="prev()">Back</button><button class="btn primary" onclick="next()">Continue</button></div></div>
+    <div class="wiz-step" data-step="6" style="display:none"><div class="wiz-head"><div><h3>Ready to start</h3><div class="small muted">Review the campaign before launch.</div></div><span class="pill">Ready</span></div><div class="wiz-body"><div class="grid g2"><div class="profile-card"><div class="small">Target</div><b>US e-commerce marketing leaders</b></div><div class="profile-card"><div class="small">Daily Leads</div><b>20</b></div><div class="profile-card"><div class="small">Follow-ups</div><b>2</b></div><div class="profile-card"><div class="small">AI Reply & Translation</div><b style="color:#16885d">Enabled</b></div></div></div><div class="wiz-foot"><button class="btn" onclick="prev()">Back</button><button class="btn primary" onclick="openView('dashboard')">Start Finding Customers</button></div></div>
+  </div>
+</div>
+</section>
+
+<section class="view" id="settings">
+  <div class="grid g2">
+    <div class="card"><h3>Profile & Company</h3><div class="field" style="margin-top:14px"><label>Full Name</label><input value="Michelle Pan"></div><div class="field"><label>Company</label><input value="AutoClaw Inc."></div><div class="field"><label>Email Signature</label><textarea rows="4">Best,
+Michelle Pan
+AutoClaw Inc.</textarea></div><button class="btn primary">Save Changes</button></div>
+    <div class="card"><h3>Knowledge Base</h3><div style="border:1.5px dashed #d5d5da;border-radius:14px;padding:30px;text-align:center;margin-top:14px;background:#fafafa"><div style="font-size:26px">＋</div><b>Upload files or add a website</b><div class="small muted" style="margin:6px 0 12px">PDF, DOCX, FAQ, pricing, product details</div><button class="btn">Upload Files</button></div></div>
+  </div>
+</section>
+
+</div></main></div>
+<script>
+const meta={dashboard:["Dashboard","Campaign activity and outreach performance"],leads:["Leads","Qualified contacts found by AutoClaw"],inbox:["Inbox","Manage replies, translation, and AI responses"],campaign:["Campaign","Review sequences and performance"],wizard:["New Outreach","Set up a campaign in a few simple steps"],settings:["Settings","Manage profile, automation, and knowledge"]};
+function openView(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===id));document.getElementById("pageTitle").textContent=meta[id][0];document.getElementById("pageSub").textContent=meta[id][1];window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>openView(b.dataset.view));
+document.querySelectorAll(".toggle").forEach(t=>t.onclick=()=>t.classList.toggle("on"));
+let s=1;function render(){document.querySelectorAll(".wiz-step").forEach(x=>x.style.display=Number(x.dataset.step)===s?"block":"none");document.querySelectorAll(".step").forEach(x=>x.classList.toggle("active",Number(x.dataset.ind)===s))}function next(){if(s<6){s++;render()}}function prev(){if(s>1){s--;render()}}
+</script>
+</body>
+</html>
